@@ -13,22 +13,23 @@ it('Tampilan login',() => {
                 expect(intercept.response.statusCode).to.eq(200);
                 })
         loginPage.menuDashboard().should('have.text','Dashboard');
+        cy.intercept("GET","**/viewDirectory").as("viewDirectory");
         loginPage.menusidebar().contains('Directory').click();
         loginPage.textdirectory().should('have.text','Directory');
+        cy.wait("@viewDirectory").then((intercept) => {
+            expect(intercept.response.statusCode).to.eq(200);
+        })
         loginPage.inputemployee().type('mini');
         loginPage.selectname().contains('mine').click();
         loginPage.jobTitle().eq(0).click();
         loginPage.pilihjobtitle().contains('HR Manager').click();
         loginPage.location().eq(1).click();
         loginPage.pilihlokasi().contains('Texas R&D').click();
-        //cy.get('Peter Mac Anderson', { timeout: 10000 }) // Tunggu hingga 10 detik
-        //loginPage.jobtitle().contains('Job Title').click();
+        loginPage.buttonsearch().click();
+
+       
+        loginPage.buttonresetdirectory().click();
         
-        //cy.intercept("GET","**/employees").as("employees");
-        //     //loginPage.buttonReset().click();
-        //     cy.wait("@employees").then((intercept) => {
-        //             expect(intercept.response.statusCode).to.eq(200);
-        //     })
-            
+        loginPage.viewafterreset().should('contain','Records Found');
     })
 })
